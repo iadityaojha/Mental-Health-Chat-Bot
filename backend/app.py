@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import chat_router, helplines_router, appointments_router, admin_router
+from routers import chat_router, helplines_router, appointments_router, admin_router, features_router
 import os
 from dotenv import load_dotenv
 
@@ -32,6 +32,7 @@ app.include_router(chat_router.router, prefix="/api/chat", tags=["Chat"])
 app.include_router(helplines_router.router, prefix="/api/helplines", tags=["Helplines"])
 app.include_router(appointments_router.router, prefix="/api/appointments", tags=["Appointments"])
 app.include_router(admin_router.router, prefix="/api/admin", tags=["Admin"])
+app.include_router(features_router.router, prefix="/api", tags=["Features"])
 
 @app.get("/health")
 async def health_check():

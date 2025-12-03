@@ -11,9 +11,33 @@ const api = axios.create({
 
 export const chatService = {
     sendMessage: async (userId, message) => {
-        const response = await api.post('/chat/', { user_id: userId, message });
+        const response = await api.post('/chat/chat', { user_id: userId, message });
         return response.data;
     },
+    getExercises: async () => {
+        const response = await api.get('/exercises');
+        return response.data;
+    },
+    getResources: async () => {
+        const response = await api.get('/resources');
+        return response.data;
+    },
+    getSOS: async () => {
+        const response = await api.get('/sos');
+        return response.data;
+    },
+    getMoods: async () => {
+        const response = await api.get('/moods');
+        return response.data;
+    },
+    addMood: async (mood, note) => {
+        const response = await api.post('/moods', { mood, note });
+        return response.data;
+    },
+    saveLocation: async (lat, lng) => {
+        const response = await api.post('/location', { lat, lng });
+        return response.data;
+    }
 };
 
 export const helplineService = {
