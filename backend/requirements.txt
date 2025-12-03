@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+pydantic
+python-multipart
+requests
+firebase-admin
+python-dotenv
+geopy
+jinja2
+sentence-transformers
+numpy
+scikit-learn
+pytest
+httpx
