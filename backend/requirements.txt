@@ -12,3 +12,4 @@ numpy
 scikit-learn
 pytest
 httpx
+gpt4all

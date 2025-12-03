@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from services.safety.safety_filter import safety_filter
-from services.llm_provider.hf_provider import hf_provider
+# from services.llm_provider.hf_provider import hf_provider
+from services.llm_provider.local_provider import local_provider
 from typing import Optional, List
 
 router = APIRouter()
@@ -44,7 +45,8 @@ async def chat_endpoint(request: ChatRequest):
 
     # 3. LLM Generation
     try:
-        llm_reply = hf_provider.generate_response(request.message, system_prompt=SYSTEM_PROMPT)
+        # llm_reply = hf_provider.generate_response(request.message, system_prompt=SYSTEM_PROMPT)
+        llm_reply = local_provider.generate_response(request.message, system_prompt=SYSTEM_PROMPT)
         return ChatResponse(
             reply=llm_reply,
             safety_flag=False,

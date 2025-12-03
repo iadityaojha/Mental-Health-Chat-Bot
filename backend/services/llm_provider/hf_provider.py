@@ -26,7 +26,7 @@ class HFProvider:
         }
 
         try:
-            response = requests.post(self.api_url, headers=headers, json=payload)
+            response = requests.post(self.api_url, headers=headers, json=payload, timeout=30)
             response.raise_for_status()
             result = response.json()
             if isinstance(result, list) and len(result) > 0:
