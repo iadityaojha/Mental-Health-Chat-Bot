@@ -4,7 +4,8 @@ echo Starting Mental Health Chatbot (Localhost)
 echo ===================================================
 
 echo 1. Starting Backend Server (FastAPI)...
-start "Backend Server" cmd /k "cd backend && python -m uvicorn app:app --reload"
+echo Installing dependencies...
+start "Backend Server" cmd /k "cd backend && pip install -r requirements.txt && python -m uvicorn app:app --reload"
 
 echo Waiting for backend to initialize...
 timeout /t 5

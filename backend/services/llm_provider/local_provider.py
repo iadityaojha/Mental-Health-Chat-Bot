@@ -30,7 +30,7 @@ class LocalProvider:
         except requests.exceptions.ConnectionError:
             return "Error: Could not connect to Ollama. Is it running? (Run 'ollama serve' or open the app)"
         except Exception as e:
-            print(f"Ollama Error: {e}")
-            return "I'm having trouble thinking right now."
+            print(f"CRITICAL OLLAMA ERROR: {str(e)}") # Print exact error for debugging
+            return f"Error: {str(e)}" # Show error in chat for visibility
 
 local_provider = LocalProvider()

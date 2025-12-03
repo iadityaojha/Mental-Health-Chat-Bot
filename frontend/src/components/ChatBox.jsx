@@ -35,7 +35,9 @@ const ChatBox = ({ onSafetyTrigger }) => {
 
             setMessages(prev => [...prev, { role: 'bot', content: response.reply }]);
         } catch (error) {
-            setMessages(prev => [...prev, { role: 'bot', content: "I'm having trouble connecting right now. Please try again later." }]);
+            console.error("Chat Error:", error);
+            const errorMessage = error.response?.data?.detail || error.message || "Connection error";
+            setMessages(prev => [...prev, { role: 'bot', content: `Error: ${errorMessage}. Check backend terminal.` }]);
         } finally {
             setLoading(false);
         }
@@ -54,8 +56,8 @@ const ChatBox = ({ onSafetyTrigger }) => {
                 {messages.map((msg, idx) => (
                     <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[80%] p-3 rounded-lg ${msg.role === 'user'
-                                ? 'bg-indigo-600 text-white rounded-br-none'
-                                : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-sm'
+                            ? 'bg-indigo-600 text-white rounded-br-none'
+                            : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-sm'
                             }`}>
                             {msg.content}
                         </div>
