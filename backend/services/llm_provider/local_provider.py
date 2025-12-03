@@ -1,32 +1,35 @@
-from gpt4all import GPT4All
-import os
+import requests
+import json
 
 class LocalProvider:
     def __init__(self):
-        # This will download the model (approx 4GB) to the cache folder on first run
-        # Using a smaller, faster model for laptops: 'orca-mini-3b-gguf2-q4_0.gguf' (~2GB)
-        # or 'mistral-7b-instruct-v0.1.Q4_0.gguf' (~4GB) - better quality
-        self.model_name = "orca-mini-3b-gguf2-q4_0.gguf" 
-        print(f"Initializing Local LLM: {self.model_name} (This may take time on first run)...")
-        try:
-            self.model = GPT4All(self.model_name)
-            print("Local LLM loaded successfully.")
-        except Exception as e:
-            print(f"Failed to load local LLM: {e}")
-            self.model = None
+        self.api_url = "http://localhost:11434/api/generate"
+        # You can change this to 'llama3', 'gemma', etc.
+        self.model_name = "mistral" 
+        print(f"Initializing Ollama Provider with model: {self.model_name}")
         
     def generate_response(self, prompt: str, system_prompt: str = "") -> str:
-        if not self.model:
-            return "Error: Local model failed to load."
-
-        full_prompt = f"### System:\n{system_prompt}\n\n### User:\n{prompt}\n\n### Assistant:\n"
+        full_prompt = f"System: {system_prompt}\nUser: {prompt}\nAssistant:"
         
+        payload = {
+            "model": self.model_name,
+            "prompt": full_prompt,
+            "stream": False,
+            "options": {
+                "temperature": 0.7,
+                "num_predict": 200
+            }
+        }
+
         try:
-            # Generate response
-            output = self.model.generate(full_prompt, max_tokens=200, temp=0.7)
-            return output.strip()
+            response = requests.post(self.api_url, json=payload, timeout=30)
+            response.raise_for_status()
+            result = response.json()
+            return result.get("response", "").strip()
+        except requests.exceptions.ConnectionError:
+            return "Error: Could not connect to Ollama. Is it running? (Run 'ollama serve' or open the app)"
         except Exception as e:
-            print(f"Local Generation Error: {e}")
+            print(f"Ollama Error: {e}")
             return "I'm having trouble thinking right now."
 
 local_provider = LocalProvider()
