@@ -4,19 +4,21 @@
 
 :root {
     /* ChatGPT-like Theme Colors */
-    --sidebar-bg: #171717;
-    /* Darker, almost black */
-    --sidebar-hover: #212121;
+    --sidebar-bg: #ffffff;
+    /* White background */
+    --sidebar-hover: #f3f4f6;
+    /* Light gray hover */
     --main-bg: #ffffff;
-    --text-primary: #ECECEC;
-    --text-secondary: #B4B4B4;
+    --text-primary: #1f2937;
+    /* Dark gray text */
+    --text-secondary: #6b7280;
+    /* Medium gray text */
     --user-msg-bg: #f4f4f4;
-    /* Light gray for user */
     --bot-msg-bg: transparent;
-    --border-color: rgba(255, 255, 255, 0.1);
+    --border-color: rgba(0, 0, 0, 0.1);
+    /* Darker border for light theme */
     --input-bg: #f4f4f4;
     --accent: #10a37f;
-    /* ChatGPT Green-ish, or we can use our Blue */
     --accent-blue: #5B6CFF;
 }
 
@@ -56,6 +58,8 @@ body {
         height: 100%;
         flex-shrink: 0;
         transition: transform 0.3s ease;
+        border-right: 1px solid var(--border-color);
+        /* Added border */
     }
 
     .sidebar-item {
@@ -76,7 +80,8 @@ body {
     }
 
     .sidebar-item.active {
-        background-color: #2f2f2f;
+        background-color: #e5e7eb;
+        /* Light gray for active state */
     }
 
     .new-chat-btn {
@@ -255,5 +260,26 @@ body {
 
     .input-box-wrapper {
         padding: 0 12px;
+    }
+}
+
+/* Custom Scrollbar */
+@layer utilities {
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.2);
     }
 }

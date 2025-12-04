@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ChatBox from '../components/ChatBox';
 import Sidebar from '../components/Sidebar';
 import HelplineLocator from '../components/HelplineLocator';
+import FAQList from '../components/FAQList';
 import SafetyModal from '../components/SafetyModal';
 import { Menu, Plus } from 'lucide-react';
 import { chatService } from '../services/api';
@@ -12,6 +13,7 @@ const Chat = () => {
     const [safetyActions, setSafetyActions] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [externalMessage, setExternalMessage] = useState(null);
+    const [chatKey, setChatKey] = useState(0);
 
     const handleSafetyTrigger = (actions) => {
         setSafetyActions(actions);
@@ -28,32 +30,14 @@ const Chat = () => {
     };
 
     const handleSidebarAction = async (id) => {
-        setActiveTab(id);
-
-        try {
-            if (id === 'mood') {
-                const data = await chatService.getMoods();
-                const text = data.moods.length
-                    ? data.moods.map(m => `${m.mood} — ${new Date(m.ts).toLocaleString()}`).join('\n')
-                    : 'No mood entries yet.';
-                setExternalMessage({ role: 'bot', content: `Mood entries:\n${text}` });
-                setActiveTab('chat');
-            } else if (id === 'breathing') {
-                const data = await chatService.getExercises();
-                const text = data.exercises.map(x => x.title).join(', ');
-                setExternalMessage({ role: 'bot', content: `Exercises: ${text}` });
-                setActiveTab('chat');
-            } else if (id === 'resources') {
-                const data = await chatService.getResources();
-                const text = data.resources.map(r => r.title).join(', ');
-                setExternalMessage({ role: 'bot', content: `Resources: ${text}` });
-                setActiveTab('chat');
-            } else if (id === 'map') {
-                // Keep on map tab
-            }
-        } catch (error) {
-            console.error("Error fetching feature data:", error);
+        if (id === 'new-chat') {
+            setChatKey(prev => prev + 1);
+            setActiveTab('chat');
+            setExternalMessage(null); // Clear any external messages
+        } else {
+            setActiveTab(id);
         }
+        // Features are now set to "Coming Soon" view by default via the render logic
     };
 
     return (
@@ -75,7 +59,7 @@ const Chat = () => {
                         <Menu size={24} />
                     </button>
                     <span className="font-semibold text-gray-700">MindMate</span>
-                    <button onClick={() => handleSidebarAction('chat')} className="text-gray-600">
+                    <button onClick={() => handleSidebarAction('new-chat')} className="text-gray-600">
                         <Plus size={24} />
                     </button>
                 </header>
@@ -94,6 +78,7 @@ const Chat = () => {
                 <div className="flex-1 overflow-hidden relative">
                     {activeTab === 'chat' && (
                         <ChatBox
+                            key={chatKey}
                             onSafetyTrigger={handleSafetyTrigger}
                             externalMessage={externalMessage}
                             onMessageConsumed={() => setExternalMessage(null)}
@@ -106,9 +91,19 @@ const Chat = () => {
                         </div>
                     )}
 
-                    {(activeTab !== 'chat' && activeTab !== 'map') && (
-                        <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                            <p>Feature coming soon...</p>
+                    {activeTab === 'faq' && (
+                        <FAQList />
+                    )}
+
+                    {(activeTab !== 'chat' && activeTab !== 'map' && activeTab !== 'faq') && (
+                        <div className="flex flex-col items-center justify-center h-full text-gray-400 bg-gray-50">
+                            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                                <span className="text-2xl">🚧</span>
+                            </div>
+                            <h3 className="text-xl font-semibold text-gray-700 mb-2">Coming Soon</h3>
+                            <p className="text-gray-500 max-w-xs text-center">
+                                We're working hard to bring you this feature. Stay tuned for updates!
+                            </p>
                         </div>
                     )}
                 </div>

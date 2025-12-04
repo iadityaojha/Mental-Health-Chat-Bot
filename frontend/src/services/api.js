@@ -11,7 +11,7 @@ const api = axios.create({
 
 export const chatService = {
     sendMessage: async (userId, message) => {
-        const response = await api.post('/chat/chat', { user_id: userId, message });
+        const response = await api.post('/chat/', { user_id: userId, message });
         return response.data;
     },
     getExercises: async () => {

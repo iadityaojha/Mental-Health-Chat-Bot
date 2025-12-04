@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, MessageSquare, Smile, Wind, BookOpen, MapPin, Settings, LogOut } from 'lucide-react';
+import { Plus, MessageSquare, Smile, Wind, BookOpen, MapPin, Settings, LogOut, HelpCircle } from 'lucide-react';
 
 const Sidebar = ({ activeTab, onTabChange, isOpen, toggleSidebar }) => {
     const menuItems = [
@@ -8,6 +8,7 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, toggleSidebar }) => {
         { id: 'breathing', icon: <Wind size={18} />, label: 'Exercises' },
         { id: 'resources', icon: <BookOpen size={18} />, label: 'Resources' },
         { id: 'map', icon: <MapPin size={18} />, label: 'Helplines' },
+        { id: 'faq', icon: <HelpCircle size={18} />, label: 'FAQ' },
     ];
 
     return (
@@ -22,8 +23,8 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, toggleSidebar }) => {
                 {/* New Chat Button */}
                 <div className="p-2">
                     <button
-                        onClick={() => onTabChange('chat')}
-                        className="new-chat-btn w-[calc(100%-16px)] text-left hover:bg-[#2A2B32] transition-colors"
+                        onClick={() => onTabChange('new-chat')}
+                        className="new-chat-btn w-[calc(100%-16px)] text-left hover:bg-gray-100 transition-colors"
                     >
                         <Plus size={16} />
                         New chat
@@ -31,7 +32,7 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, toggleSidebar }) => {
                 </div>
 
                 {/* Navigation Items */}
-                <div className="flex-1 overflow-y-auto py-2">
+                <div className="flex-1 overflow-y-auto py-2 custom-scrollbar">
                     <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         Features
                     </div>
@@ -51,23 +52,19 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, toggleSidebar }) => {
                 </div>
 
                 {/* Bottom Section */}
-                <div className="border-t border-white/10 p-2">
+                <div className="border-t border-gray-200 p-2">
                     <div className="sidebar-item">
                         <Settings size={18} />
                         <span>Settings</span>
                     </div>
-                    <div className="sidebar-item text-red-400 hover:text-red-300">
+                    <div className="sidebar-item text-red-500 hover:text-red-600">
                         <LogOut size={18} />
                         <span>Log out</span>
                     </div>
 
-                    <div className="flex items-center gap-3 px-3 py-3 mt-2 border-t border-white/10">
-                        <div className="w-8 h-8 rounded bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">
-                            MM
-                        </div>
+                    <div className="flex items-center gap-3 px-3 py-3 mt-2 border-t border-gray-200">
                         <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium text-white truncate">MindMate User</div>
-                            <div className="text-xs text-gray-400">Free Plan</div>
+                            <div className="text-sm font-medium text-gray-900 truncate">Mind Mate</div>
                         </div>
                     </div>
                 </div>
