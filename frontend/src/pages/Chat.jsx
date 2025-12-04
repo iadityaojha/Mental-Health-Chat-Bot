@@ -3,46 +3,15 @@ import ChatBox from '../components/ChatBox';
 import Sidebar from '../components/Sidebar';
 import HelplineLocator from '../components/HelplineLocator';
 import SafetyModal from '../components/SafetyModal';
-import { Menu } from 'lucide-react';
+import { Menu, Plus } from 'lucide-react';
 import { chatService } from '../services/api';
 
 const Chat = () => {
     const [activeTab, setActiveTab] = useState('chat');
     const [safetyModalOpen, setSafetyModalOpen] = useState(false);
     const [safetyActions, setSafetyActions] = useState([]);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [externalMessage, setExternalMessage] = useState(null);
-
-    useEffect(() => {
-        function adjustLayout() {
-            const app = document.querySelector('.app');
-            const sidebar = document.querySelector('.sidebar');
-            const header = document.querySelector('.header');
-            const canvas = document.querySelector('.canvas');
-            if (!app || !sidebar || !header || !canvas) return;
-
-            try {
-                const cs = window.getComputedStyle(app);
-                const gridCols = cs.gridTemplateColumns.split(' ');
-                let sidebarWidth = gridCols[0];
-                if (sidebarWidth && sidebarWidth.endsWith('px')) {
-                    const px = parseFloat(sidebarWidth);
-                    header.style.paddingLeft = (px * 0.22 + 18) + 'px';
-                    canvas.style.paddingLeft = Math.max(20, px * 0.25) + 'px';
-                }
-            } catch (e) { }
-        }
-
-        window.addEventListener('resize', adjustLayout);
-        // Run initially and after a short delay to ensure rendering
-        adjustLayout();
-        const timer = setTimeout(adjustLayout, 120);
-
-        return () => {
-            window.removeEventListener('resize', adjustLayout);
-            clearTimeout(timer);
-        };
-    }, []);
 
     const handleSafetyTrigger = (actions) => {
         setSafetyActions(actions);
@@ -88,66 +57,61 @@ const Chat = () => {
     };
 
     return (
-        <div className="app-container app">
+        <div className="app-layout">
             {/* Sidebar */}
-            <Sidebar activeTab={activeTab} onTabChange={handleSidebarAction} />
+            <Sidebar
+                activeTab={activeTab}
+                onTabChange={handleSidebarAction}
+                isOpen={sidebarOpen}
+                toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+            />
 
             {/* Main Content */}
-            <main className="flex flex-col h-full overflow-hidden">
+            <main className="main-content">
 
-                {/* Header */}
-                <header className="glass-header header px-[22px] flex items-center justify-between shrink-0">
-                    <div className="flex items-center gap-3 brand">
-                        <div className="md:hidden">
-                            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                                <Menu size={24} />
-                            </button>
-                        </div>
-                        <div className="w-[44px] h-[44px] rounded-[12px] bg-gradient-to-br from-[#C9BEFF] to-[#B9F2E6] flex items-center justify-center text-white font-bold">
-                            MM
-                        </div>
-                        <div>
-                            <h1 className="m-0 text-[18px] font-bold">MindMate</h1>
-                            <div className="text-[12px] text-[#97A0B3] mt-[4px]">Student mental-health companion</div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-[10px]">
-                        <div className="hidden md:block px-3 py-2 rounded-full border border-[rgba(11,22,40,0.06)] bg-[rgba(255,255,255,0.65)] cursor-pointer text-sm">Profiles</div>
-                        <div className="hidden md:block px-3 py-2 rounded-full border border-[rgba(11,22,40,0.06)] bg-[rgba(255,255,255,0.65)] cursor-pointer text-sm">Dark</div>
-                        <button
-                            onClick={handleEmergencyClick}
-                            className="px-3 py-2 rounded-full font-bold text-[#3b0b0b] bg-gradient-to-r from-[#FF8A8A] to-[#FFD1D1] border-none cursor-pointer text-sm"
-                        >
-                            SOS
-                        </button>
-                    </div>
+                {/* Mobile Header */}
+                <header className="md:hidden flex items-center justify-between p-3 border-b border-gray-200 bg-white">
+                    <button onClick={() => setSidebarOpen(true)} className="text-gray-600">
+                        <Menu size={24} />
+                    </button>
+                    <span className="font-semibold text-gray-700">MindMate</span>
+                    <button onClick={() => handleSidebarAction('chat')} className="text-gray-600">
+                        <Plus size={24} />
+                    </button>
                 </header>
 
+                {/* Desktop Header (Minimal) */}
+                <div className="hidden md:flex absolute top-4 right-4 z-10 gap-2">
+                    <button
+                        onClick={handleEmergencyClick}
+                        className="px-3 py-1.5 rounded-md font-medium text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 text-sm transition-colors"
+                    >
+                        SOS Help
+                    </button>
+                </div>
+
                 {/* Canvas */}
-                <section className="flex flex-col h-[calc(100%-72px)] px-[26px] py-[20px] canvas">
-                    <div className="flex flex-col h-full">
-                        {activeTab === 'chat' && (
-                            <ChatBox
-                                onSafetyTrigger={handleSafetyTrigger}
-                                externalMessage={externalMessage}
-                                onMessageConsumed={() => setExternalMessage(null)}
-                            />
-                        )}
+                <div className="flex-1 overflow-hidden relative">
+                    {activeTab === 'chat' && (
+                        <ChatBox
+                            onSafetyTrigger={handleSafetyTrigger}
+                            externalMessage={externalMessage}
+                            onMessageConsumed={() => setExternalMessage(null)}
+                        />
+                    )}
 
-                        {activeTab === 'map' && (
-                            <div className="h-full overflow-auto">
-                                <HelplineLocator />
-                            </div>
-                        )}
+                    {activeTab === 'map' && (
+                        <div className="h-full w-full">
+                            <HelplineLocator />
+                        </div>
+                    )}
 
-                        {(activeTab !== 'chat' && activeTab !== 'map') && (
-                            <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                                <p>Feature coming soon...</p>
-                            </div>
-                        )}
-                    </div>
-                </section>
+                    {(activeTab !== 'chat' && activeTab !== 'map') && (
+                        <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                            <p>Feature coming soon...</p>
+                        </div>
+                    )}
+                </div>
 
             </main>
 

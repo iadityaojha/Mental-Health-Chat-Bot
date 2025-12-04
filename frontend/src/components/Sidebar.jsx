@@ -1,38 +1,78 @@
 import React from 'react';
-import { Home, Smile, Wind, BookOpen, MapPin, Settings } from 'lucide-react';
+import { Plus, MessageSquare, Smile, Wind, BookOpen, MapPin, Settings, LogOut } from 'lucide-react';
 
-const Sidebar = ({ activeTab, onTabChange }) => {
+const Sidebar = ({ activeTab, onTabChange, isOpen, toggleSidebar }) => {
     const menuItems = [
-        { id: 'chat', icon: <Home size={20} />, label: 'Home' },
-        { id: 'mood', icon: <Smile size={20} />, label: 'Mood Tracker' },
-        { id: 'breathing', icon: <Wind size={20} />, label: 'Exercises' },
-        { id: 'resources', icon: <BookOpen size={20} />, label: 'Resources' },
-        { id: 'map', icon: <MapPin size={20} />, label: 'Location' },
+        { id: 'chat', icon: <MessageSquare size={18} />, label: 'Chat' },
+        { id: 'mood', icon: <Smile size={18} />, label: 'Mood Tracker' },
+        { id: 'breathing', icon: <Wind size={18} />, label: 'Exercises' },
+        { id: 'resources', icon: <BookOpen size={18} />, label: 'Resources' },
+        { id: 'map', icon: <MapPin size={18} />, label: 'Helplines' },
     ];
 
     return (
-        <aside className="sidebar-glass sidebar flex flex-col items-center py-[18px] px-[12px] gap-[14px] h-full">
-            <div className="logo w-[44px] h-[44px] rounded-[10px] bg-gradient-to-br from-[#B9F2E6] to-[#C9BEFF] flex items-center justify-center text-white font-bold shadow-[0_8px_22px_rgba(91,108,255,0.10)]">
-                MM
-            </div>
+        <>
+            {/* Mobile Overlay */}
+            <div
+                className={`fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                onClick={toggleSidebar}
+            />
 
-            {menuItems.map((item) => (
-                <div
-                    key={item.id}
-                    onClick={() => onTabChange(item.id)}
-                    className={`icon-btn ${activeTab === item.id ? 'border-indigo-200 shadow-sm' : ''}`}
-                    title={item.label}
-                >
-                    {item.icon}
+            <aside className={`sidebar-container ${isOpen ? 'open' : ''}`}>
+                {/* New Chat Button */}
+                <div className="p-2">
+                    <button
+                        onClick={() => onTabChange('chat')}
+                        className="new-chat-btn w-[calc(100%-16px)] text-left hover:bg-[#2A2B32] transition-colors"
+                    >
+                        <Plus size={16} />
+                        New chat
+                    </button>
                 </div>
-            ))}
 
-            <div className="flex-1"></div>
+                {/* Navigation Items */}
+                <div className="flex-1 overflow-y-auto py-2">
+                    <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Features
+                    </div>
+                    {menuItems.map((item) => (
+                        <div
+                            key={item.id}
+                            onClick={() => {
+                                onTabChange(item.id);
+                                if (window.innerWidth < 768) toggleSidebar();
+                            }}
+                            className={`sidebar-item ${activeTab === item.id ? 'active' : ''}`}
+                        >
+                            {item.icon}
+                            <span>{item.label}</span>
+                        </div>
+                    ))}
+                </div>
 
-            <div className="icon-btn" title="Settings">
-                <Settings size={20} />
-            </div>
-        </aside>
+                {/* Bottom Section */}
+                <div className="border-t border-white/10 p-2">
+                    <div className="sidebar-item">
+                        <Settings size={18} />
+                        <span>Settings</span>
+                    </div>
+                    <div className="sidebar-item text-red-400 hover:text-red-300">
+                        <LogOut size={18} />
+                        <span>Log out</span>
+                    </div>
+
+                    <div className="flex items-center gap-3 px-3 py-3 mt-2 border-t border-white/10">
+                        <div className="w-8 h-8 rounded bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+                            MM
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium text-white truncate">MindMate User</div>
+                            <div className="text-xs text-gray-400">Free Plan</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </>
     );
 };
 
