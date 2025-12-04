@@ -67,6 +67,10 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, toggleSidebar }) => {
                             <div className="text-sm font-medium text-gray-900 truncate">Mind Mate</div>
                         </div>
                     </div>
+
+                    <div className="px-3 pb-2 text-center">
+                        <p className="text-[10px] text-gray-400">Made By Aditya Ojha</p>
+                    </div>
                 </div>
             </aside>
         </>
